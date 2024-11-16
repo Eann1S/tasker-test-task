@@ -22,6 +22,9 @@ target/
 .springBeans
 .sts4-cache
 
+.env
+.env.*
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
