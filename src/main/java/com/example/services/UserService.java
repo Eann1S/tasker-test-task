@@ -1,12 +1,17 @@
 package com.example.services;
 
-import com.example.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.dtos.CreateUserDto;
+import com.example.dtos.UserDto;
+import com.example.entities.User;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
+    User findByEmail(String email);
 
-    private final UserRepository userRepository;
+    boolean existsByEmail(String email);
+
+    User findById(String id);
+
+    UserDto getUserProfile(String id);
+
+    User createUser(CreateUserDto createUserDto);
 }
