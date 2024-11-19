@@ -9,5 +9,7 @@ public interface AuthService {
 
     JwtDto login(LoginDto loginDto);
 
-    UserDto register(RegisterDto registerDto);
+    UserDto registerUser(RegisterDto registerDto);
+
+    UserDto registerAdmin(RegisterDto registerDto);
 }

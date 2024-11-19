@@ -1,7 +1,5 @@
 package com.example.filter;
 
-import com.example.entities.User;
-import com.example.exceptions.UnauthorizedException;
 import com.example.services.JwtService;
 import com.example.services.UserService;
 import jakarta.servlet.FilterChain;
@@ -25,13 +23,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+        var authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwt = extractJwtFromHeader(authorizationHeader);
-            String email = jwtService.validateToken(jwt);
-            User user = userService.findByEmail(email);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    user, user.getPassword(), user.getAuthorities());
+            var jwt = extractJwtFromHeader(authorizationHeader);
+            var email = jwtService.validateToken(jwt);
+            var user = userService.findByEmail(email);
+            var profile = userService.getUserProfileByEmail(email);
+            var authentication = new UsernamePasswordAuthenticationToken(profile, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

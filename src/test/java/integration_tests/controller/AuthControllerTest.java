@@ -43,7 +43,7 @@ public class AuthControllerTest extends IntegrationTest {
                     content().contentType(MediaType.APPLICATION_JSON),
                     jsonPath("$.id").exists(),
                     jsonPath("$.email").value(registerDto.email()),
-                    jsonPath("$.roles[0]").value(Role.USER.name())
+                    jsonPath("$.roles[0]").value(Role.ROLE_USER.name())
             );
         }
 

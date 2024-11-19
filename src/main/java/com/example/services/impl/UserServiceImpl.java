@@ -11,7 +11,7 @@ import com.example.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,15 +37,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserProfile(String id) {
-        User user = findById(id);
+    public UserDto getUserProfileByEmail(String email) {
+        User user = findByEmail(email);
         return mapper.toDto(user);
     }
 
     @Override
-    public User createUser(CreateUserDto createUserDto) {
+    public User createUser(CreateUserDto createUserDto, Set<Role> roles) {
         User user = mapper.toEntity(createUserDto);
-        user.setRoles(Collections.singletonList(Role.USER));
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 }

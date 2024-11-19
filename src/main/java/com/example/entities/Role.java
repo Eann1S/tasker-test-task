@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serializable;
 
 public enum Role implements Serializable, GrantedAuthority {
-    USER, ADMIN;
+    ROLE_USER, ROLE_ADMIN;
 
 
     @Override

@@ -1,5 +1,6 @@
 package integration_tests.controller;
 
+import com.example.entities.Role;
 import integration_tests.IntegrationTest;
 import integration_tests.utils.AuthUtils;
 import org.instancio.junit.InstancioSource;
@@ -36,13 +37,13 @@ public class UserControllerTest extends IntegrationTest {
                 content().contentType(MediaType.APPLICATION_JSON),
                 jsonPath("$.id").value(user.id()),
                 jsonPath("$.email").value(user.email()),
-                jsonPath("$.roles[0]").value(user.roles().get(0).name())
+                jsonPath("$.roles[0]").value(Role.ROLE_USER.name())
         );
     }
 
     @ParameterizedTest
     @InstancioSource(samples = 1)
-    void shouldNotReturnProfile_whenUserNotAuthenticated() throws Exception {
+    void shouldNotReturnProfile_whenTokenIsInvalid() throws Exception {
         var res = performGetProfileRequest("invalid");
 
         res.andExpectAll(
@@ -50,6 +51,14 @@ public class UserControllerTest extends IntegrationTest {
                 content().contentType(MediaType.APPLICATION_JSON),
                 jsonPath("$.message").value("Token is invalid")
         );
+    }
+
+    @ParameterizedTest
+    @InstancioSource(samples = 1)
+    void shouldNotReturnProfile_whenTokenIsMissing() throws Exception {
+        var res = mockMvc.perform(get("/api/users/me"));
+
+        res.andExpectAll(status().isForbidden());
     }
 
     private ResultActions performGetProfileRequest(String accessToken) throws Exception {

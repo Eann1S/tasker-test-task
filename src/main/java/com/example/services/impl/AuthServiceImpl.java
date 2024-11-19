@@ -1,6 +1,7 @@
 package com.example.services.impl;
 
 import com.example.dtos.*;
+import com.example.entities.Role;
 import com.example.entities.User;
 import com.example.exceptions.ConflictException;
 import com.example.exceptions.UnauthorizedException;
@@ -11,6 +12,8 @@ import com.example.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,18 +36,31 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDto register(RegisterDto registerDto) {
-        boolean exists = userService.existsByEmail(registerDto.email());
-        if (exists) {
-            throw new ConflictException("Email already in use");
-        }
+    public UserDto registerUser(RegisterDto registerDto) {
+        validateExistingUserByEmail(registerDto.email());
+        return register(registerDto, Set.of(Role.ROLE_USER));
+    }
+
+    @Override
+    public UserDto registerAdmin(RegisterDto registerDto) {
+        return register(registerDto, Set.of(Role.ROLE_ADMIN));
+    }
+
+    private UserDto register(RegisterDto registerDto, Set<Role> roles) {
         String encodedPassword = passwordEncoder.encode(registerDto.password());
         CreateUserDto createUserDto = new CreateUserDto(registerDto.email(), encodedPassword);
-        User user = userService.createUser(createUserDto);
+        User user = userService.createUser(createUserDto, roles);
         return userMapper.toDto(user);
     }
 
     private boolean isPasswordValid(String password, String encodedPassword) {
         return passwordEncoder.matches(password, encodedPassword);
+    }
+
+    private void validateExistingUserByEmail(String email) {
+        boolean exists = userService.existsByEmail(email);
+        if (exists) {
+            throw new ConflictException("Email already in use");
+        }
     }
 }
