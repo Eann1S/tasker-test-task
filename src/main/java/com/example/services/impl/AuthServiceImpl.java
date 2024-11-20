@@ -49,6 +49,12 @@ public class AuthServiceImpl implements AuthService {
         return register(registerDto, Set.of(Role.ROLE_ADMIN));
     }
 
+    @Override
+    public void logout(User user) {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        jwtService.expireToken(user.getEmail());
+    }
+
     private UserDto register(RegisterDto registerDto, Set<Role> roles) {
         String encodedPassword = passwordEncoder.encode(registerDto.password());
         CreateUserDto createUserDto = new CreateUserDto(registerDto.email(), encodedPassword);

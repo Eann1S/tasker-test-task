@@ -125,6 +125,38 @@ public class AuthControllerTest extends IntegrationTest {
         }
     }
 
+    @Nested
+    class Logout {
+        @ParameterizedTest
+        @InstancioSource(samples = 1)
+        void shouldLogout() throws Exception {
+            var jwt = authUtils.createUser().getValue();
+
+            var res = performLogoutRequest(jwt.accessToken());
+
+            res.andExpectAll(status().isOk());
+        }
+
+        @ParameterizedTest
+        @InstancioSource(samples = 1)
+        void shouldNotLogout_whenNotAuthenticated() throws Exception {
+            var res = performLogoutRequest("invalid");
+
+            res.andExpectAll(status().isUnauthorized());
+        }
+
+        @ParameterizedTest
+        @InstancioSource(samples = 1)
+        void shouldNotLogout_whenAlreadyLoggedOut() throws Exception {
+            var jwt = authUtils.createUser().getValue();
+
+            performLogoutRequest(jwt.accessToken());
+            var res = performLogoutRequest(jwt.accessToken());
+
+            res.andExpectAll(status().isUnauthorized());
+        }
+    }
+
     private @NotNull ResultActions performRegisterRequest(RegisterDto registerDto) throws Exception {
         return mockMvc.perform(post("/api/auth/register")
                 .content(objectMapper.writeValueAsString(registerDto))
@@ -135,5 +167,10 @@ public class AuthControllerTest extends IntegrationTest {
         return mockMvc.perform(post("/api/auth/login")
                 .content(objectMapper.writeValueAsString(loginDto))
                 .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    private @NotNull ResultActions performLogoutRequest(String accessToken) throws Exception {
+        return mockMvc.perform(post("/api/logout")
+                .header("Authorization", "Bearer " + accessToken));
     }
 }

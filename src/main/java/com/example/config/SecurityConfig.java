@@ -24,6 +24,7 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final FilterChainExceptionHandler exceptionHandler;
+    private final CustomLogoutHandler logoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,16 +34,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (authorize) -> authorize
                                 .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/logout").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(exceptionHandler, LogoutFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 }

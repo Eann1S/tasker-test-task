@@ -14,6 +14,10 @@ spring:
     jwt:
       secret: ${JWT_SECRET}
       expiration: 1d
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 admin:
   email: ${ADMIN_EMAIL}
