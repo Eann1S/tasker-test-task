@@ -40,8 +40,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ErrorDto> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+    @ExceptionHandler({AuthorizationDeniedException.class, ForbiddenException.class})
+    public ResponseEntity<ErrorDto> handleForbiddenException(Exception e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.FORBIDDEN);
     }

@@ -3,8 +3,9 @@ package integration_tests.utils;
 import com.example.dtos.JwtDto;
 import com.example.dtos.LoginDto;
 import com.example.dtos.RegisterDto;
-import com.example.dtos.UserDto;
+import com.example.entities.User;
 import com.example.services.AuthService;
+import com.example.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,21 +22,25 @@ public class AuthUtils {
     private String adminPassword;
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public UserDto registerUser(RegisterDto registerDto) {
-        return authService.registerUser(registerDto);
+    public void registerUser(RegisterDto registerDto) {
+        authService.registerUser(registerDto);
     }
 
-    public Pair<UserDto, JwtDto> createUser() {
+    public Pair<User, JwtDto> createUser() {
         var registerDto = Instancio.create(RegisterDto.class);
-        var userDto = registerUser(registerDto);
+        registerUser(registerDto);
         var loginDto = new LoginDto(registerDto.email(), registerDto.password());
-        JwtDto jwt = authService.login(loginDto);
-        return Pair.of(userDto, jwt);
+        var jwt = authService.login(loginDto);
+        var user = userService.findByEmail(loginDto.email());
+        return Pair.of(user, jwt);
     }
 
-    public JwtDto loginAsAdmin() {
+    public Pair<User, JwtDto> loginAsAdmin() {
         var loginDto = new LoginDto(adminEmail, adminPassword);
-        return authService.login(loginDto);
+        var user = userService.findByEmail(adminEmail);
+        JwtDto jwt = authService.login(loginDto);
+        return Pair.of(user, jwt);
     }
 }

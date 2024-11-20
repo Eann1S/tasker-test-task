@@ -1,11 +1,15 @@
 package com.example.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,7 +39,12 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setTask(this);
+    }
 
     @Override
     public final boolean equals(Object o) {

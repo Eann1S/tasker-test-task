@@ -6,10 +6,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -26,19 +23,19 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "assignee")
     @ToString.Exclude
-    private List<Task> tasksAssigned;
+    private Set<Task> tasksAssigned = new HashSet<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Task> tasks;
+    private Set<Task> tasks = new HashSet<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -35,8 +35,8 @@ public class UserControllerTest extends IntegrationTest {
         res.andExpectAll(
                 status().isOk(),
                 content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.id").value(user.id()),
-                jsonPath("$.email").value(user.email()),
+                jsonPath("$.id").value(user.getId()),
+                jsonPath("$.email").value(user.getEmail()),
                 jsonPath("$.roles[0]").value(Role.ROLE_USER.name())
         );
     }

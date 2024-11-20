@@ -10,6 +10,8 @@ import com.example.services.AuthService;
 import com.example.services.JwtService;
 import com.example.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
         if (!isPasswordValid) {
             throw new UnauthorizedException("Invalid credentials");
         }
+        setAuthentication(user);
         String token = jwtService.generateToken(user.getEmail());
         return new JwtDto(token);
     }
@@ -62,5 +65,10 @@ public class AuthServiceImpl implements AuthService {
         if (exists) {
             throw new ConflictException("Email already in use");
         }
+    }
+
+    private void setAuthentication(User user) {
+        var authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

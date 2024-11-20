@@ -17,4 +17,6 @@ public interface UserService {
     UserDto getUserProfileByEmail(String email);
 
     User createUser(CreateUserDto createUserDto, Set<Role> roles);
+
+    UserDto getUserProfile(User user);
 }

@@ -7,18 +7,21 @@ import com.example.dtos.UpdateTaskDto;
 import com.example.entities.Priority;
 import com.example.entities.Status;
 import com.example.entities.Task;
+import com.example.entities.User;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        imports = {Status.class, Priority.class}
+        imports = {Status.class, Priority.class},
+        uses = CommentMapper.class
 )
 public interface TaskMapper {
 
     @Mapping(target = "status", defaultExpression = "java(Status.TODO)")
     @Mapping(target = "priority", defaultExpression = "java(Priority.LOW)")
-    Task fromDto(CreateTaskDto createTaskDto);
+    @Mapping(target = "author", expression = "java(author)")
+    Task fromDto(CreateTaskDto createTaskDto, @Context User author);
 
     TaskDto toDto(Task task);
 

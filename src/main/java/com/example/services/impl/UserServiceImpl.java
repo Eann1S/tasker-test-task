@@ -48,4 +48,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         return userRepository.save(user);
     }
+
+    @Override
+    public UserDto getUserProfile(User user) {
+        return mapper.toDto(user);
+    }
 }
