@@ -34,9 +34,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (authorize) -> authorize
                                 .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui.html/**", "/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/logout").authenticated()
-                                .anyRequest().authenticated()
-                )
+                                .anyRequest().authenticated())
                 .addFilterBefore(exceptionHandler, LogoutFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

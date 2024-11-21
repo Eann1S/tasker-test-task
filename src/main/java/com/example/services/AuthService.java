@@ -12,7 +12,7 @@ public interface AuthService {
 
     UserDto registerUser(RegisterDto registerDto);
 
-    UserDto registerAdmin(RegisterDto registerDto);
+    void registerAdmin(RegisterDto registerDto);
 
     void logout(User user);
 }

@@ -45,8 +45,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDto registerAdmin(RegisterDto registerDto) {
-        return register(registerDto, Set.of(Role.ROLE_ADMIN));
+    public void registerAdmin(RegisterDto registerDto) {
+        if (userService.existsByEmail(registerDto.email())) {
+            return;
+        }
+        register(registerDto, Set.of(Role.ROLE_ADMIN));
     }
 
     @Override
